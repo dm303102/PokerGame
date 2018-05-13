@@ -1,6 +1,19 @@
 import java.util.*;
 import java.util.stream.IntStream;
 
+/**
+ * The PokerHand class takes a String as a constructor in the form PlayerName: Card1, Card2, Card3, 
+ * Card 4, Card 5 and determines the poker hand the player has. The checkHand method runs all the 
+ * boolean 'is' methods to determine the current poker hand and sets the enum member hand to an enum 
+ * Hand value and sets the high card and rank unless the hand is a Pair or Two Pair then they are 
+ * determined in the calling class. 
+ *  
+ * @author Doug Morgan
+ * @version 1.0
+ *
+ * @since 2018-5-13
+ */
+
 public class PokerHand {
 	public static enum Hand {
 		STRAIGHT_FLUSH,
@@ -14,6 +27,15 @@ public class PokerHand {
 		HIGH_CARD
 	}
 
+	/**
+	 * PokerHand constructor takes a String as a constructor in the form PlayerName: Card1, Card2, 
+	 * Card3, Card4, Card5. It also sets the player name, fills a String array and int array for 
+	 * the name and values of each card, counts alike cards in the hand, and calls checkHand to 
+	 * determine the hand.
+	 *
+	 * @param input String constructor for 2 poker hands
+	 * Example - Black: 2H 3H 4H 5C 9S White: 3C 8D 2D AC KS
+	 */
 	public PokerHand(String input) {
 		String[] inputArr = input.split(" ");	
 		//set 5 card hand to string array
@@ -54,7 +76,9 @@ public class PokerHand {
 
 		checkHand();
 	}
-	
+	/**
+	 * Print function used for debugging
+	 */
 	public void print() {
 		System.out.print(this.playerName + " : ");
 		int j=0;
@@ -117,6 +141,7 @@ public class PokerHand {
 		int highCard = 0;
 		boolean found = false;
 
+		//loops through cards of pairs and sets members first and second pair and nonpair card
 		for(int i=0; i < cardCount.length; i++) {
 			if(cardCount[i] == 2) {
 
@@ -139,6 +164,7 @@ public class PokerHand {
 				this.nonpair = cardValues[i];
 			}
 
+			//two pairs found
 			if(count >= 4) {
 				return true;
 			}
@@ -182,6 +208,11 @@ public class PokerHand {
 		return false;
 	}
 
+	/**
+	 * reads highCard member int value and returning corresponding String
+	 *
+	 * @return String String form of hands high card
+	 */
 	public String getHighCardString() {
 			switch(this.highCard) {
 				//case 10:	return "Ten";
@@ -194,6 +225,11 @@ public class PokerHand {
 			}
 	}
 
+	/**
+	 * reads hand enum member and returning corresponding hand String
+	 *
+	 * @return String String form of hand
+	 */
 	public String getHandString() {
 		if(this.hand == Hand.STRAIGHT_FLUSH) {
 			return "straight flush";
@@ -224,6 +260,9 @@ public class PokerHand {
 		}
 	}
 
+	/**
+	 * Double loop to count alike cards in hand
+	 */ 
 	private void countCards() {
 		for(int i=0; i<cardValues.length; i++) {
 			cardCount[i] = 0;
@@ -236,7 +275,9 @@ public class PokerHand {
 		}
 	}
 	
-	
+	/**
+	 * Used by constructor to call boolean member functions to determine the current pokerhand
+	 */
 	private void checkHand() {
 		if(isStraightFlush()) {
 			hand = Hand.STRAIGHT_FLUSH;
@@ -270,16 +311,14 @@ public class PokerHand {
 
 	public String playerName;
 	public String highCardStr;		//Highest card in String form
-	public Hand hand;
-	public int highCard;		//Highest card from cardValues[]
-	public int rank;		//scoring rank for rounds with the same hands
-	public int cardCount[];
-	public int cardValues[];	//Array of hands cards as Int values
-	public String cardsStr[]; 	//Array of hands cards as strings
-	public int sortedValues[];
-	public int firstPair;
-	public int secondPair;
-	public int nonpair;
-	//public static boolean won;
-
+	public Hand hand;			//Enumerated Hand value
+	public int highCard;			//Highest card for current hand
+	public int rank;			//scoring rank for rounds with the same hands
+	public int cardCount[];			//counts of alike cards
+	public int cardValues[];		//Array of hands cards as Int values
+	public String cardsStr[]; 		//Array of hands cards as strings
+	public int sortedValues[];		//Array of sorted values corresponding to cards
+	public int firstPair;			//first value in a Two Pair hand
+	public int secondPair;			//second value in a Two Pair hand
+	public int nonpair;			//nonpair card for Two Pair hand
 }
