@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class PokerHand {
-	enum Hand {
+	public static enum Hand {
 		STRAIGHT_FLUSH,
 		FOUR_KIND,
 		FULL_HOUSE,
@@ -194,6 +194,36 @@ public class PokerHand {
 			}
 	}
 
+	public String getHandString() {
+		if(this.hand == Hand.STRAIGHT_FLUSH) {
+			return "straight flush";
+		}
+		else if(this.hand == Hand.FOUR_KIND) {
+			return "four of a kind";
+		}
+		else if(this.hand == Hand.FULL_HOUSE) {
+			return "full house";
+		}
+		else if(this.hand == Hand.FLUSH) {
+			return "flush";
+		}
+		else if(this.hand == Hand.STRAIGHT) {
+			return "straight";
+		}
+		else if(this.hand == Hand.THREE_KIND) {
+			return "three of a kind";
+		}
+		else if(this.hand == Hand.TWO_PAIR) {
+			return "two pair";
+		}
+		else if(this.hand == Hand.PAIR) {
+			return "pair";
+		}
+		else {
+			return " ";
+		}
+	}
+
 	private void countCards() {
 		for(int i=0; i<cardValues.length; i++) {
 			cardCount[i] = 0;
@@ -205,6 +235,7 @@ public class PokerHand {
 			}
 		}
 	}
+	
 	
 	private void checkHand() {
 		if(isStraightFlush()) {
@@ -248,6 +279,6 @@ public class PokerHand {
 	public int firstPair;
 	public int secondPair;
 	public int nonpair;
-	public static boolean won;
+	//public static boolean won;
 
 }
