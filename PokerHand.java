@@ -2,6 +2,18 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class PokerHand {
+	enum Hand {
+		STRAIGHT_FLUSH,
+		FOUR_KIND,
+		FULL_HOUSE,
+		FLUSH,
+		STRAIGHT,
+		THREE_KIND,
+		TWO_PAIR,
+		PAIR,
+		HIGH_CARD
+	}
+
 	public PokerHand(String input) {
 		String[] inputArr = input.split(" ");	
 		//set 5 card hand to string array
@@ -40,6 +52,7 @@ public class PokerHand {
 		this.sortedValues = this.cardValues;
 		Arrays.sort(this.sortedValues);
 
+		checkHand();
 	}
 	
 	public void print() {
@@ -192,9 +205,40 @@ public class PokerHand {
 			}
 		}
 	}
+	
+	private void checkHand() {
+		if(isStraightFlush()) {
+			hand = Hand.STRAIGHT_FLUSH;
+		}
+		else if(isFourOfAKind()) {
+			hand = Hand.FOUR_KIND;
+		}
+		else if(isFullHouse()) {
+			hand = Hand.FULL_HOUSE;
+		}
+		else if(isFlush()) {
+			hand = Hand.FLUSH;
+		}
+		else if(isStraight()) {
+			hand = Hand.STRAIGHT;
+		}
+		else if(isThreeOfAKind()) {
+			hand = Hand.THREE_KIND;
+		}
+		else if(isTwoPairs()) {
+			hand = Hand.TWO_PAIR;
+		}
+		else if(isPair()) {
+			hand = Hand.PAIR;
+		}
+		else {
+			hand = Hand.HIGH_CARD;
+		}
+	}
 
 	public String playerName;
 	public String highCardStr;		//Highest card in String form
+	public Hand hand;
 	public int highCard;		//Highest card from cardValues[]
 	public int rank;		//scoring rank for rounds with the same hands
 	public int cardCount[];
@@ -205,4 +249,5 @@ public class PokerHand {
 	public int secondPair;
 	public int nonpair;
 	public static boolean won;
+
 }

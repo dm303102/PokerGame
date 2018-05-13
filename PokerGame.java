@@ -1,5 +1,5 @@
 //: control/WhileTest.java
-// Demonstrates the while loop.
+// Poker hand simulator
 import java.io.*;
 import java.util.function.Function;
 
@@ -20,104 +20,125 @@ public class PokerGame {
 		}
 
 	 	String line = reader.readLine(); 
-	 
-	//Init poker Hands
+
+	 	//Loop while poker hand input lines exist
+	 	while(line != null) {
+			//Init poker Hands
+			h1 = new PokerHand(line.substring(0,21));
+			h2 = new PokerHand(line.substring(23));
 	
-	 while(line != null) {
-		h1 = new PokerHand(line.substring(0,21));
-		h2 = new PokerHand(line.substring(23));
-		h1.print();
-		h2.print();
-		line = reader.readLine();
+			//Debug info
+			h1.print();
+			h2.print();
 
-
-		//Poker Hand Simulator
-		//
-		//Straight Flush
-		checkHand(PokerHand::isStraightFlush, PokerHand::isStraightFlush, h1, h2, "Straight Flush");
-		checkHand(PokerHand::isFourOfAKind, PokerHand::isFourOfAKind, h1, h2, "Four of a Kind");
-		checkHand(PokerHand::isFullHouse, PokerHand::isFullHouse, h1, h2, "Full House");
-		checkHand(PokerHand::isFlush, PokerHand::isFlush, h1, h2, "Flush");
-		checkHand(PokerHand::isStraight, PokerHand::isStraight, h1, h2, "Straight");
-		checkHand(PokerHand::isThreeOfAKind, PokerHand::isThreeOfAKind, h1, h2, "Three of a Kind");
-		checkHand(PokerHand::isTwoPairs, PokerHand::isTwoPairs, h1, h2, "Two Pairs");
-		checkHand(PokerHand::isPair, PokerHand::isPair, h1, h2, "Pair");
-		checkHand(PokerHand::isPair, PokerHand::isPair, h1, h2, "High Card");
-
-		//if(h1.highCard > h2.highCard) {
-		//	handWinsHigh(h1, h2);
-	//	}
-	//	else if (h1.highCard < h2.highCard) {
-	//		handWinsHigh(h2,h1);
-	//	}
-	//	else {
-	//		System.out.println("Tie.");
-	//	}
-	 }
-
-		//if(h1.isStraightFlush() && h2.isStraightFlush()) {
-		//	System.out.println("High Cards: " + h1.highCard + ", " + h2.highCard);
-		//}
-
-		//Four of a kind
-		//check
-
-
-	}
+			line = reader.readLine();
+		}
 	catch(IOException e) {
 		System.out.println("Input error");
 	}
  }
 
-  public static void checkHand(Function<PokerHand, Boolean> hand1, Function<PokerHand, Boolean> hand2, 
-		 PokerHand ph1, PokerHand ph2, String hand) {
+  public static void checkHands() {
 	 //same hands
-	 if(hand1.apply(ph1) && hand2.apply(ph2)) {
-		 	if(ph1.rank > ph2.rank) {
-				handWinsHigh(ph1, ph2);
+	 if(h1.hand == h2.hand && h1.hand != Hand.HIGH_CARD) {
+		 	if(h1.rank > h2.rank) {
+				handWinsHigh(h1, h2);
 			}
-			else if(ph1.rank < ph2.rank) {
-				handWinsHigh(ph2, ph1);
+			else if(h1.rank < h2.rank) {
+				handWinsHigh(h2, h1);
 			}
-			else {	//hands are equal or High card needs calculated
-				findHighCard(hand);
-				if(ph1.highCard > ph2.highCard) {
-					handWinsHigh(ph1,ph2);
+			else {	//hands are equal; determine high card if needed
+				findHighCards();
+				if(h1.highCard > h2.highCard) {
+					handWinsHigh(h1,h2);
 				}
-				else if(ph1.highCard < ph2.highCard) {
-					handWinsHigh(ph2, ph1);
+				else if(h1.highCard < h2.highCard) {
+					handWinsHigh(h2, h1);
 				}
 				else {
 					System.out.println("Tie");
 				}
 			}
 	 }
-	else if (hand1.apply(ph1)) {
-		findHighCard(hand);
-		handWins(ph1, ph2, hand);
+	 //Check for different hands
+	if(h1.hand == Hand.STRAIGHT_FLUSH) {
+		handWins(h1, h2);
 	}
-	else if (hand2.apply(ph2)) {
-		findHighCard(hand);
-		handWins(ph2, ph1, hand);
+	else if(h2.hand == Hand.STRAIGHT_FLUSH) {
+		handWins(h2, h1,);
 	}
-	else {
-		return;
+	else if(h1.hand == Hand.FOUR_KIND) {
+		handWins(h1, h2);
 	}
+	else if(h2.hand == Hand.FOUR_KIND) {
+		handWins(h2, h1);
+	}
+	else if(h1.hand == Hand.FULL_HOUSE) {
+		handWins(h1, h2);
+	}
+	else if(h2.hand == Hand.FULL_HOUSE) {
+		handWins(h2, h1);
+	}
+	else if(h1.hand == Hand.FLUSH) {
+		handWins(h1, h2);
+	}
+	else if(h2.hand == Hand.FLUSH) {
+		handWins(h2, h1);
+	}
+	else if(h1.hand == Hand.STRAIGHT) {
+		handWins(h1, h2);
+	}
+	else if(h2.hand == Hand.STRAIGHT) {
+		handWins(h2, h1);
+	}
+	else if(h1.hand == Hand.THREE_KIND) {
+		handWins(h1, h2);
+	}
+	else if(h2.hand == Hand.THREE_KIND) {
+		handWins(h2, h1);
+	}
+	else if(h1.hand == Hand.TWO_PAIR) {
+		findHighCards();
+		handWins(h1, h2);
+	}
+	else if(h2.hand == Hand.TWO_PAIR) {
+		findHighCards();
+		handWins(h2, h1);
+	}
+	else if(h1.hand == Hand.PAIR) {
+		findHighCards();
+		handWins(h1, h2);
+	}
+	else if(h2.hand == Hand.PAIR) {
+		findHighCards();
+		handWins(h2, h1);
+	}
+	else if(h1.hand == Hand.HIGH_CARD && h2.hand == Hand.HIGH_CARD) {
+		for(int i=cardValues.length; i > 0; i--) {
+			if(h1.sortedValues[i] > h2.sortedValues[i]) {
+				handWins(h1, h2);
+			}
+			else if(h1.sortedValues[i] < h2.sortedValues[i]) {
+				handWins(h2, h1);
+			}
+			System.out.println("Tie");
+		}	
+	}
+  }
  }
 
-
- private static void handWins(PokerHand hand1, PokerHand hand2, String hand) {
-	System.out.println(hand1.playerName + " wins. with " + hand + ": " + hand1.highCard 
-						+ " over " + hand2.highCard);
+ private static void handWins(PokerHand hand1, PokerHand hand2) {
+	System.out.println(hand1.playerName + " wins. with " + hand1.getHandString() + ": " 
+			+ hand1.getHighCardString() + " over " + hand2.getHighCardString);
  }
 
  private static void handWinsHigh(PokerHand hand1, PokerHand hand2) {
-	System.out.println(hand1.playerName + " wins. with high card: " + hand1.highCard 
-						+ " over " + hand2.highCard);
+	System.out.println(hand1.playerName + " wins. with high card: " + hand1.getHighCardString()
+						+ " over " + hand2.getHighCardString());
  }
 
- private static void findHighCard(String hand) {
- 	if(hand == "Two Pairs") {
+ private static void findHighCards() {
+ 	if(h1.hand == Hand.TWO_PAIR && h2.hand == Hand.TWO_PAIR) {
 		if(h1.firstPair == h2.firstPair) {
 			if(h1.secondPair == h2.secondPair) {
 				if(h1.nonpair == h2.nonpair) {
@@ -150,8 +171,36 @@ public class PokerGame {
 			h2.highCard = h2.secondPair;
 		}
 	}
-	else if(hand == "Pair") {
-		for(int i = h1.cardCount.length; i > 0; i--) {
+	else if(h1.hand == Hand.TWO_PAIR) {
+		if(h1.firstPair > h1.secondPair) {
+			h1.highCard = h1.firstPair;
+		}
+		else if(h1.firstPair < h1.secondPair) {
+			h1.highCard = h1.secondPair;
+		}
+		else {
+			h1.highCard = h1.nonpair;
+			if(h1.highCard < h1.firstPair) {
+				h1.highCard = h1.firstPair;
+			}
+		}
+	}
+	else if(h2.hand == Hand.TWO_PAIR) {
+		if(h2.firstPair > h2.secondPair) {
+			h2.highCard = h2.firstPair;
+		}
+		else if(h2.firstPair < h2.secondPair) {
+			h2.highCard = h2.secondPair;
+		}
+		else {
+			h2.highCard = h2.nonpair;
+			if(h2.highCard < h2.firstPair) {
+				h2.highCard = h2.firstPair;
+			}
+		}
+	}
+	if(h1.hand == Hand.PAIR && h2.hand == Hand.PAIR) {
+		for(int i = h1.sortedValues.length; i > 0; i--) {
 			int j=i, k=i;
 			while(h1.cardCount[j] != 2 && j>=0) {
 				j--;
@@ -167,19 +216,31 @@ public class PokerGame {
 			}
 		}
 	}
-	else if(hand == "High Card") {
-		for(int i = h1.cardCount.length; i > 0; i--) {
-			if(h1.sortedValues[i] != h2.sortedValues[i]) {
+	else if(h1.hand == Hand.PAIR) {
+		for(int i = h1.sortedValues.length; i > 0; i--) {
+			boolean found = false;
+			if(!found && h1.cardCount[j] == 2 ) {
+				found = true;
 				h1.highCard = h1.sortedValues[i];
-				h2.highCard = h2.sortedValues[i];
-				break;
 			}
+			
 		}
 	}
+	else if(h2.hand == Hand.PAIR) {
+		for(int i = h2.sortedValues.length; i > 0; i--) {
+			boolean found = false;
+			if(!found && h2.cardCount[j] == 2 ) {
+				found = true;
+				h2.highCard = h2.sortedValues[i];
+			}
+			
+		}
+	}
+
  }		
 	public static PokerHand h1;
 	public static PokerHand h2;
-	public static boolean tie = false;
+	//public static boolean tie = false;
 
 } /* (Execute to see output) *///:~
 
