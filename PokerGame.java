@@ -192,7 +192,7 @@ public class PokerGame {
 		}
 	}
 	if(h1.hand == PokerHand.Hand.PAIR && h2.hand == PokerHand.Hand.PAIR) {
-		for(int i = h1.sortedValues.length; i > 0; i--) {
+		for(int i = h1.sortedValues.length-1; i > 0; i--) {
 			int j=i, k=i;
 			while(h1.cardCount[j] != 2 && j>=0) {
 				j--;

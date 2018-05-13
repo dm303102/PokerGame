@@ -105,7 +105,7 @@ public class PokerHand {
 		for(int i=0; i < cardCount.length; i++) {
 			if(cardCount[i] == 3) {
 				this.rank += cardValues[i];
-				//this.highCard = cardValues[i];
+				this.highCard = cardValues[i];
 			}
 		}
 		return (IntStream.of(this.cardCount).anyMatch(x -> x == 3) &&
@@ -264,6 +264,7 @@ public class PokerHand {
 		}
 		else {
 			hand = Hand.HIGH_CARD;
+			highCard = sortedValues[sortedValues.length-1];
 		}
 	}
 
