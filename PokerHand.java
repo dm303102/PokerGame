@@ -16,6 +16,7 @@ import java.util.stream.IntStream;
  */
 
 public class PokerHand {
+	public static final int HAND_SIZE = 5;
 	public static enum Hand {
 		STRAIGHT_FLUSH,
 		FOUR_KIND,
@@ -48,7 +49,7 @@ public class PokerHand {
 		this.playerName = inputArr[0].substring(0,inputArr[0].length()-1);
 
 		//Parse card values into cardValues array
-		for(int i=0; i<this.cardsStr.length; i++){
+		for(int i=0; i<HAND_SIZE; i++){
 			//System.out.println("Debug " + this.cardsStr[i]);
 			char s = this.cardsStr[i].charAt(0);
 			switch(s) {
@@ -83,13 +84,13 @@ public class PokerHand {
 	public void print() {
 		System.out.print(this.playerName + " : ");
 		int j=0;
-		for(int i=0; i<cardsStr.length; i++){
+		for(int i=0; i<HAND_SIZE; i++){
 			System.out.print(cardsStr[i]);
 			System.out.print(" ");
 		}
 		//System.out.println();
 		/*System.out.print("Card Counts: ");
-		for(int i=0; i<cardsStr.length; i++){
+		for(int i=0; i<HAND_SIZE; i++){
 			System.out.print(cardCount[i]);
 		}*/
 		System.out.println();
@@ -97,40 +98,43 @@ public class PokerHand {
 
 	public boolean isFlush(){
 		//Check for cards with all the same suit
-		for(int i=0; i<cardsStr.length; i++){
+		for(int i=0; i<HAND_SIZE; i++){
 			//if not at end of cardsStr 
-			if ((i<cardsStr.length-1)) {
+			if ((i<HAND_SIZE-1)) {
 				//if current and next suit are not equal
 				if (!(cardsStr[i].substring(1).equals(cardsStr[i+1].substring(1)))) {
 					return false;
 				}
 			}
 		}
-		this.rank =  this.sortedValues[this.sortedValues.length-1];
+		this.rank =  this.sortedValues[HAND_SIZE-1];
 		this.highCard = rank;
 		return true;
 	}
 
 	public boolean isStraight() {
-		for(int i=0; i<this.sortedValues.length; i++){
+		for(int i=0; i<HAND_SIZE; i++){
 			//if not at end of cardsStr
-			if ((i<this.sortedValues.length-1)) {
+			if ((i<HAND_SIZE-1)) {
 				if (this.sortedValues[i]+1 != (this.sortedValues[i+1])) {
 					return false;
 				}
 			}
 		}
-		this.rank =  this.sortedValues[this.sortedValues.length-1];
+		this.rank =  this.sortedValues[HAND_SIZE-1];
 		this.highCard = rank;
 		return true;
 	}
 
 	public boolean isFullHouse(){
-		this.rank = 0;
-		for(int i=0; i < cardCount.length; i++) {
-			if(cardCount[i] == 3) {
+		rank = 0;
+		highCard = 0;
+		for(int i=0; i < HAND_SIZE; i++) {
+			if(cardCount[i] == 3 || cardCount[i] == 2) {
 				this.rank += cardValues[i];
-				this.highCard = cardValues[i];
+				if(highCard < cardValues[i]) {
+					highCard = cardValues[i];
+				}
 			}
 		}
 		return (IntStream.of(this.cardCount).anyMatch(x -> x == 3) &&
@@ -139,11 +143,11 @@ public class PokerHand {
 
 	public boolean isTwoPairs() {
 		int count = 0;
-		int highCard = 0;
+		highCard = 0;
 		boolean found = false;
 
 		//loops through cards of pairs and sets members first and second pair and nonpair card
-		for(int i=0; i < cardCount.length; i++) {
+		for(int i=0; i < HAND_SIZE; i++) {
 			if(cardCount[i] == 2) {
 
 				if(!found) {
@@ -153,16 +157,30 @@ public class PokerHand {
 				else if(this.firstPair != cardValues[i]) {
 					this.secondPair = cardValues[i];
 				}
-
+				
+				//pairs with same values
 				if(this.secondPair == 0) {
 					this.secondPair = this.firstPair;
 				}
+
 
 				count++;
 			}
 			else
 			{
 				this.nonpair = cardValues[i];
+			}
+
+			//find highest card
+			if(firstPair < secondPair) {
+				highCard = secondPair;
+			}
+			else if (firstPair > secondPair){
+				highCard = firstPair;
+			}
+
+			if(highCard < nonpair) {
+				highCard = nonpair;
 			}
 
 			//two pairs found
@@ -176,7 +194,7 @@ public class PokerHand {
 	public boolean isFourOfAKind(){
 		boolean found = false;
 		this.rank = 0;
-		for(int i=0; i < cardCount.length; i++) {
+		for(int i=0; i < HAND_SIZE; i++) {
 			if(cardCount[i] == 4) {
 				this.rank += cardValues[i];
 				this.highCard = cardValues[i];
@@ -188,7 +206,7 @@ public class PokerHand {
 
 	public boolean isThreeOfAKind(){
 		this.rank=0;
-		for(int i=0; i < cardCount.length; i++) {
+		for(int i=0; i < HAND_SIZE; i++) {
 			if(cardCount[i] == 3) {
 				this.rank += cardValues[i];
 				this.highCard = cardValues[i];
@@ -198,7 +216,17 @@ public class PokerHand {
 	}
 	
 	public boolean isPair(){
-		this.rank=0;
+		rank=0;
+		highCard = 0;
+		for(int i=0; i < HAND_SIZE; i++) {
+			if(cardCount[i] == 2) {
+				rank += cardValues[i];
+				if(highCard < cardValues[i]) {
+					highCard = cardValues[i];
+				}
+			}
+		}
+
 		return IntStream.of(this.cardCount).anyMatch(x -> x == 2);
 	}
 
@@ -265,10 +293,10 @@ public class PokerHand {
 	 * Double loop to count alike cards in hand
 	 */ 
 	private void countCards() {
-		for(int i=0; i<cardValues.length; i++) {
+		for(int i=0; i<HAND_SIZE; i++) {
 			cardCount[i] = 0;
 			int currCard = cardValues[i];
-			for(int j=0; j<cardValues.length; j++) {
+			for(int j=0; j<HAND_SIZE; j++) {
 				if(currCard == cardValues[j]) {
 					cardCount[i]++;
 				}
@@ -306,7 +334,7 @@ public class PokerHand {
 		}
 		else {
 			hand = Hand.HIGH_CARD;
-			highCard = sortedValues[sortedValues.length-1];
+			highCard = sortedValues[HAND_SIZE-1];
 		}
 	}
 
